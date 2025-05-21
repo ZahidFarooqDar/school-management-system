@@ -304,7 +304,7 @@ namespace SMSBAL.AppUsers
 
                 var passwordHash = await _passwordEncryptHelper.ProtectAsync(signUpSM.PasswordHash);
                 objDM.ClientCompanyDetailId = companyDetail.Id;
-                objDM.RoleType = RoleTypeDM.ClientEmployee;
+                objDM.RoleType = RoleTypeDM.Admin;
                 objDM.PasswordHash = passwordHash;
                 objDM.CreatedBy = _loginUserDetail.LoginId;
                 objDM.CreatedOnUTC = DateTime.UtcNow;

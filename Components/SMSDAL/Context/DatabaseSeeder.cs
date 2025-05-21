@@ -23,7 +23,6 @@ namespace SMSDAL.Context
             var apiDb = context as ApiDbContext;
             if (apiDb != null && apiDb.ApplicationUsers.Count() == 0)
             {
-                SeedDummySuperAdminUsers(apiDb, defaultCreatedBy, defaultUpdatedBy, encryptorFunc);
                 SeedDummySystemAdminUsers(apiDb, defaultCreatedBy, defaultUpdatedBy, encryptorFunc);
                 SeedDummyClientAdminUsers(apiDb, defaultCreatedBy, defaultUpdatedBy, encryptorFunc);
                 SeedScanCodesAdminUsers(apiDb, defaultCreatedBy);
@@ -47,12 +46,12 @@ namespace SMSDAL.Context
             var codeVisionCompany = new ClientCompanyDetailDM()
             {
                 Id = 1,
-                Name = "SMS",
+                Name = "school-management-service",
                 CompanyCode = "123",
                 Description = "Software Development Company",
-                ContactEmail = "corevision@outlook.com",
+                ContactEmail = "sms@outlook.com",
                 CompanyMobileNumber = "9876542341",
-                CompanyWebsite = "www.corevision.com",
+                CompanyWebsite = "www.sms.com",
                 CompanyLogoPath = "wwwroot/content/companies/logos/company.jpg",
                 CompanyDateOfEstablishment = new DateTime(1990, 1, 1),
                 CreatedBy = defaultCreatedBy,
@@ -66,30 +65,6 @@ namespace SMSDAL.Context
 
         #region Users
 
-        private void SeedDummySuperAdminUsers(ApiDbContext apiDb, string defaultCreatedBy, string defaultUpdatedBy, Func<string, string> encryptorFunc)
-        {
-            var superUser1 = new ApplicationUserDM()
-            {
-                RoleType = RoleTypeDM.SuperAdmin,
-                FirstName = "Super",
-                MiddleName = "Admin",
-                EmailId = "saone@email.com",
-                LastName = "One",
-                LoginId = "super1",
-                IsEmailConfirmed = true,
-                LoginStatus = LoginStatusDM.Enabled,
-                PhoneNumber = "1234567890",
-                IsPhoneNumberConfirmed = true,
-                PasswordHash = encryptorFunc("corevisionsuper1"),
-                ProfilePicturePath = "wwwroot/content/loginusers/profile/profile.jpg",
-                CreatedBy = defaultCreatedBy,
-                CreatedOnUTC = DateTime.UtcNow
-            };
-            
-            apiDb.ApplicationUsers.Add(superUser1);
-            apiDb.SaveChanges();
-            
-        }
         private void SeedDummySystemAdminUsers(ApiDbContext apiDb, string defaultCreatedBy, string defaultUpdatedBy, Func<string, string> encryptorFunc)
         {
             var sysUser1 = new ApplicationUserDM()
@@ -105,7 +80,7 @@ namespace SMSDAL.Context
                 IsEmailConfirmed = true,
                 LoginStatus = LoginStatusDM.Enabled,
                 IsPhoneNumberConfirmed = true,
-                PasswordHash = encryptorFunc("corevisionsystemadmin1"),
+                PasswordHash = encryptorFunc("smssystemadmin1"),
                 CreatedBy = defaultCreatedBy,
                 CreatedOnUTC = DateTime.UtcNow
             };
@@ -119,12 +94,12 @@ namespace SMSDAL.Context
             var cAdmin1 = new ClientUserDM()
             {
                 ClientCompanyDetailId = 1,
-                RoleType = RoleTypeDM.ClientAdmin,
+                RoleType = RoleTypeDM.Admin,
                 FirstName = "Client",
-                MiddleName = "User",
-                EmailId = "clientuser1@email.com",
+                MiddleName = "Admin",
+                EmailId = "clientadmin1@email.com",
                 LastName = "One",
-                LoginId = "clientuser1",
+                LoginId = "admin1",
                 IsEmailConfirmed = true,
                 PhoneNumber = "1234567890",
                 LoginStatus = LoginStatusDM.Enabled,
@@ -134,26 +109,7 @@ namespace SMSDAL.Context
                 CreatedBy = defaultCreatedBy,
                 CreatedOnUTC = DateTime.UtcNow
             };
-            var cAdmin2 = new ClientUserDM()
-            {
-                ClientCompanyDetailId = 1,
-                RoleType = RoleTypeDM.ClientAdmin,
-                FirstName = "Client",
-                MiddleName = "user",
-                EmailId = "clientuser2@email.com",
-                LastName = "Two",
-                LoginId = "clientuser2",
-                IsEmailConfirmed = true,
-                PhoneNumber = "1234567890",
-                LoginStatus = LoginStatusDM.Enabled,
-                IsPhoneNumberConfirmed = true,
-                PasswordHash = encryptorFunc("pass123"),
-                ProfilePicturePath = "wwwroot/content/loginusers/profile/profile.jpg",
-                CreatedBy = defaultCreatedBy,
-                CreatedOnUTC = DateTime.UtcNow
-            };
-
-            apiDb.ClientUsers.AddRange(cAdmin1,cAdmin2);
+            apiDb.ClientUsers.AddRange(cAdmin1);
             apiDb.SaveChanges();
             
         }

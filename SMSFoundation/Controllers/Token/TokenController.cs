@@ -65,10 +65,7 @@ namespace SMSFoundation.Controllers.Token
                 return NotFound(ModelConverter.FormNewErrorResponse("Invalid Credentials",
                     ApiErrorTypeSM.InvalidInputData_Log));
             }
-            else if (userSM.LoginStatus == LoginStatusSM.Disabled && userSM.RoleType != RoleTypeSM.CompanyAutomation)
-            {
-                return Unauthorized(ModelConverter.FormNewErrorResponse(DomainConstants.DisplayMessages.Display_UserDisabled, ApiErrorTypeSM.Access_Denied_Log));
-            }
+            
             else if (userSM.LoginStatus == LoginStatusSM.PasswordResetRequired)
             {
                 return Unauthorized(ModelConverter.FormNewErrorResponse(DomainConstants.DisplayMessages.Display_UserPasswordResetRequired, ApiErrorTypeSM.Access_Denied_Log));

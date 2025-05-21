@@ -92,7 +92,7 @@ namespace SMSBAL.AppUsers
                         $"Company with companyCode= {companyCode} not found in db");
 
                 objDM.ClientCompanyDetailId = companyDetail.Id;
-                objDM.RoleType = RoleTypeDM.ClientEmployee;
+                objDM.RoleType = RoleTypeDM.Admin;
                 objDM.PasswordHash = null; //Todo: Null Password as its logged in/signed up from google
                 objDM.CreatedBy = _loginUserDetail.LoginId;
                 objDM.CreatedOnUTC = DateTime.UtcNow;

@@ -11,185 +11,185 @@ using SMSServiceModels.v1.General.ScanCodes;
 
 namespace SMSFoundation.Controllers.ScanCodes
 {
-    [ApiController]
-    [Route("api/v1/[controller]")]
-    public class ScanCodeController : ApiControllerWithOdataRoot<ScanCodesFormatSM>
-    {
-        private readonly ScanCodesProcess _scanCodesProcess;
-        private readonly PermissionProcess _permissionProcess;
-        public ScanCodeController(ScanCodesProcess process, PermissionProcess permissionProcess)
-            : base(process)
-        {
-            _scanCodesProcess = process;
-            _permissionProcess = permissionProcess;
-        }
+    /* [ApiController]
+     [Route("api/v1/[controller]")]
+     public class ScanCodeController : ApiControllerWithOdataRoot<ScanCodesFormatSM>
+     {
+         private readonly ScanCodesProcess _scanCodesProcess;
+         private readonly PermissionProcess _permissionProcess;
+         public ScanCodeController(ScanCodesProcess process, PermissionProcess permissionProcess)
+             : base(process)
+         {
+             _scanCodesProcess = process;
+             _permissionProcess = permissionProcess;
+         }
 
-        #region Odata EndPoints
-        [HttpGet]
-        [Route("odata")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [AllowAnonymous]
-        public async Task<ActionResult<ApiResponse<IEnumerable<ScanCodesFormatSM>>>> GetAsOdata(ODataQueryOptions<ScanCodesFormatSM> oDataOptions)
-        {
-            //TODO: validate inputs here probably 
-            var retList = await GetAsEntitiesOdata(oDataOptions);
-            return Ok(ModelConverter.FormNewSuccessResponse(retList));
-        }
+         #region Odata EndPoints
+         [HttpGet]
+         [Route("odata")]
+         [ApiExplorerSettings(IgnoreApi = true)]
+         [AllowAnonymous]
+         public async Task<ActionResult<ApiResponse<IEnumerable<ScanCodesFormatSM>>>> GetAsOdata(ODataQueryOptions<ScanCodesFormatSM> oDataOptions)
+         {
+             //TODO: validate inputs here probably 
+             var retList = await GetAsEntitiesOdata(oDataOptions);
+             return Ok(ModelConverter.FormNewSuccessResponse(retList));
+         }
 
-        #endregion Odata EndPoints
+         #endregion Odata EndPoints
 
-        #region Get All
+         #region Get All
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult<ApiResponse<IEnumerable<ScanCodesFormatSM>>>> GetAll()
-        {
-            var list = await _scanCodesProcess.GetAllScanCodes();
-            return Ok(ModelConverter.FormNewSuccessResponse(list));
-        }
+         [HttpGet]
+         [AllowAnonymous]
+         public async Task<ActionResult<ApiResponse<IEnumerable<ScanCodesFormatSM>>>> GetAll()
+         {
+             var list = await _scanCodesProcess.GetAllScanCodes();
+             return Ok(ModelConverter.FormNewSuccessResponse(list));
+         }
 
-        #endregion Get All
+         #endregion Get All
 
-        #region Get By Id
-        [HttpGet("{id}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<ApiResponse<ScanCodesFormatSM>>> GetById(int id)
-        {
-            var objSM = await _scanCodesProcess.GetScanCodeById(id);
-            if (objSM != null)
-            {
-                return ModelConverter.FormNewSuccessResponse(objSM);
-            }
-            else
-            {
-                return NotFound(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_IdNotFound, ApiErrorTypeSM.NoRecord_NoLog));
-            }
-        }
+         #region Get By Id
+         [HttpGet("{id}")]
+         [AllowAnonymous]
+         public async Task<ActionResult<ApiResponse<ScanCodesFormatSM>>> GetById(int id)
+         {
+             var objSM = await _scanCodesProcess.GetScanCodeById(id);
+             if (objSM != null)
+             {
+                 return ModelConverter.FormNewSuccessResponse(objSM);
+             }
+             else
+             {
+                 return NotFound(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_IdNotFound, ApiErrorTypeSM.NoRecord_NoLog));
+             }
+         }
 
-        #endregion Get By Id
+         #endregion Get By Id
 
-        #region Add
+         #region Add
 
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SuperAdmin, SystemAdmin, ClientAdmin")]
-        public async Task<ActionResult<ApiResponse<ScanCodesFormatSM>>> Post([FromBody] ApiRequest<ScanCodesFormatSM> apiRequest)
-        {
-            #region Check Request
+         [HttpPost]
+         [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SuperAdmin, SystemAdmin, ClientAdmin")]
+         public async Task<ActionResult<ApiResponse<ScanCodesFormatSM>>> Post([FromBody] ApiRequest<ScanCodesFormatSM> apiRequest)
+         {
+             #region Check Request
 
-            var innerReq = apiRequest?.ReqData;
-            if (innerReq == null)
-            {
-                return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_ReqDataNotFormed, ApiErrorTypeSM.InvalidInputData_NoLog));
-            }
-            #endregion Check Request
+             var innerReq = apiRequest?.ReqData;
+             if (innerReq == null)
+             {
+                 return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_ReqDataNotFormed, ApiErrorTypeSM.InvalidInputData_NoLog));
+             }
+             #endregion Check Request
 
-            var addedSM = await _scanCodesProcess.AddBarcodeFormat(innerReq);
-            if (addedSM != null)
-            {
-                return CreatedAtAction(nameof(GetById), new
-                {
-                    id = addedSM.Id
-                }, ModelConverter.FormNewSuccessResponse(addedSM));
-            }
-            else
-            {
-                return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_PassedDataNotSaved, ApiErrorTypeSM.NoRecord_NoLog));
-            }
-        }
-        #endregion Add
+             var addedSM = await _scanCodesProcess.AddBarcodeFormat(innerReq);
+             if (addedSM != null)
+             {
+                 return CreatedAtAction(nameof(GetById), new
+                 {
+                     id = addedSM.Id
+                 }, ModelConverter.FormNewSuccessResponse(addedSM));
+             }
+             else
+             {
+                 return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_PassedDataNotSaved, ApiErrorTypeSM.NoRecord_NoLog));
+             }
+         }
+         #endregion Add
 
-        #region Put
-        [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SuperAdmin, SystemAdmin, ClientAdmin")]
-        public async Task<ActionResult<ApiResponse<ScanCodesFormatSM>>> Put(int id, [FromBody] ApiRequest<ScanCodesFormatSM> apiRequest)
-        {
-            #region Check Request
-            var innerReq = apiRequest?.ReqData;
-            if (innerReq == null)
-            {
-                return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_ReqDataNotFormed, ApiErrorTypeSM.InvalidInputData_NoLog));
-            }
+         #region Put
+         [HttpPut("{id}")]
+         [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SuperAdmin, SystemAdmin, ClientAdmin")]
+         public async Task<ActionResult<ApiResponse<ScanCodesFormatSM>>> Put(int id, [FromBody] ApiRequest<ScanCodesFormatSM> apiRequest)
+         {
+             #region Check Request
+             var innerReq = apiRequest?.ReqData;
+             if (innerReq == null)
+             {
+                 return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_ReqDataNotFormed, ApiErrorTypeSM.InvalidInputData_NoLog));
+             }
 
-            if (id <= 0)
-            {
-                return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_IdInvalid, ApiErrorTypeSM.InvalidInputData_NoLog));
-            }
+             if (id <= 0)
+             {
+                 return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_IdInvalid, ApiErrorTypeSM.InvalidInputData_NoLog));
+             }
 
-            #endregion Check Request
+             #endregion Check Request
 
-            var resp = await _scanCodesProcess.UpdateBarcodeDetails(id, innerReq);
-            if (resp != null)
-            {
-                return Ok(ModelConverter.FormNewSuccessResponse(resp));
-            }
-            else
-            {
-                return NotFound(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_PassedDataNotSaved, ApiErrorTypeSM.NoRecord_NoLog));
-            }
-        }
-        #endregion Put
+             var resp = await _scanCodesProcess.UpdateBarcodeDetails(id, innerReq);
+             if (resp != null)
+             {
+                 return Ok(ModelConverter.FormNewSuccessResponse(resp));
+             }
+             else
+             {
+                 return NotFound(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_PassedDataNotSaved, ApiErrorTypeSM.NoRecord_NoLog));
+             }
+         }
+         #endregion Put
 
-        #region Delete
+         #region Delete
 
-        [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SuperAdmin, SystemAdmin, ClientAdmin")]
-        public async Task<ActionResult<ApiResponse<DeleteResponseRoot>>> Delete(int id)
-        {
-            var resp = await _scanCodesProcess.DeleteBarcodeFormatById(id);
-            if (resp != null && resp.DeleteResult)
-            {
-                return Ok(ModelConverter.FormNewSuccessResponse(resp));
-            }
-            else
-            {
-                return NotFound(ModelConverter.FormNewErrorResponse(resp?.DeleteMessage, ApiErrorTypeSM.NoRecord_NoLog));
-            }
-        }
+         [HttpDelete("{id}")]
+         [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SuperAdmin, SystemAdmin, ClientAdmin")]
+         public async Task<ActionResult<ApiResponse<DeleteResponseRoot>>> Delete(int id)
+         {
+             var resp = await _scanCodesProcess.DeleteBarcodeFormatById(id);
+             if (resp != null && resp.DeleteResult)
+             {
+                 return Ok(ModelConverter.FormNewSuccessResponse(resp));
+             }
+             else
+             {
+                 return NotFound(ModelConverter.FormNewErrorResponse(resp?.DeleteMessage, ApiErrorTypeSM.NoRecord_NoLog));
+             }
+         }
 
-        #endregion Delete
+         #endregion Delete
 
-        #region Generate QrCode
+         #region Generate QrCode
 
-        [HttpPost("qrcode")]
-        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "ClientEmployee, CompanyAutomation")]
-        public async Task<ActionResult<ApiResponse<CodeResponseSM>>> GenerateQRCode([FromBody] ApiRequest<GenerateQRCodeSM> apiRequest)
-        {
-            var innerReq = apiRequest?.ReqData;
-            if (innerReq == null)
-            {
-                return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_ReqDataNotFormed, ApiErrorTypeSM.InvalidInputData_NoLog));
-            }
-            /*var featureCode = "CVBARCODE-2025";
-            int userId = User.GetUserRecordIdFromCurrentUserClaims();
-            await _permissionProcess.DoesUserHasPermission(userId, featureCode);*/
-            var barcodeImageData = await _scanCodesProcess.GenerateQRcode(innerReq);
+         [HttpPost("qrcode")]
+         [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "ClientEmployee, CompanyAutomation")]
+         public async Task<ActionResult<ApiResponse<CodeResponseSM>>> GenerateQRCode([FromBody] ApiRequest<GenerateQRCodeSM> apiRequest)
+         {
+             var innerReq = apiRequest?.ReqData;
+             if (innerReq == null)
+             {
+                 return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_ReqDataNotFormed, ApiErrorTypeSM.InvalidInputData_NoLog));
+             }
+             *//*var featureCode = "CVBARCODE-2025";
+             int userId = User.GetUserRecordIdFromCurrentUserClaims();
+             await _permissionProcess.DoesUserHasPermission(userId, featureCode);*//*
+             var barcodeImageData = await _scanCodesProcess.GenerateQRcode(innerReq);
 
-            return ModelConverter.FormNewSuccessResponse(barcodeImageData);
+             return ModelConverter.FormNewSuccessResponse(barcodeImageData);
 
-        }
+         }
 
-        #endregion Generate QrCode
+         #endregion Generate QrCode
 
-        #region Zxing  Codes
+         #region Zxing  Codes
 
-        [HttpPost("generate")]
-        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "ClientEmployee, CompanyAutomation")]
-        public async Task<ActionResult<ApiResponse<CodeResponseSM>>> GenerateBarcodes([FromBody] ApiRequest<GenerateBarcodeSM> apiRequest)
-        {
-            var innerReq = apiRequest?.ReqData;
-            if (innerReq == null)
-            {
-                return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_ReqDataNotFormed, ApiErrorTypeSM.InvalidInputData_NoLog));
-            }
-            /*var featureCode = "CVBARCODE-2025";
-            int userId = User.GetUserRecordIdFromCurrentUserClaims();
-            await _permissionProcess.DoesUserHasPermission(userId, featureCode);*/
-            var barcodeImageData = await _scanCodesProcess.GenerateCode(innerReq);
+         [HttpPost("generate")]
+         [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "ClientEmployee, CompanyAutomation")]
+         public async Task<ActionResult<ApiResponse<CodeResponseSM>>> GenerateBarcodes([FromBody] ApiRequest<GenerateBarcodeSM> apiRequest)
+         {
+             var innerReq = apiRequest?.ReqData;
+             if (innerReq == null)
+             {
+                 return BadRequest(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_ReqDataNotFormed, ApiErrorTypeSM.InvalidInputData_NoLog));
+             }
+             *//*var featureCode = "CVBARCODE-2025";
+             int userId = User.GetUserRecordIdFromCurrentUserClaims();
+             await _permissionProcess.DoesUserHasPermission(userId, featureCode);*//*
+             var barcodeImageData = await _scanCodesProcess.GenerateCode(innerReq);
 
-            return ModelConverter.FormNewSuccessResponse(barcodeImageData);
+             return ModelConverter.FormNewSuccessResponse(barcodeImageData);
 
-        }
+         }
 
-        #endregion Zxing
-    }
+         #endregion Zxing
+}*/
 }

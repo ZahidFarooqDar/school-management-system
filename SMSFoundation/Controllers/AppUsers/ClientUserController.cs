@@ -14,9 +14,8 @@ using SMSBAL.Foundation.Web;
 namespace SMSFoundation.Controllers.AppUsers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/[controller]")]   
     
-    [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SuperAdmin, SystemAdmin, ClientAdmin")]
     public partial class ClientUserController : ApiControllerWithOdataRoot<ClientUserSM>
     {
         #region Properties
@@ -41,7 +40,7 @@ namespace SMSFoundation.Controllers.AppUsers
         #endregion Constructor
 
         #region Odata EndPoints
-
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SystemAdmin")]
         [HttpGet]
         [Route("odata")]
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -61,12 +60,13 @@ namespace SMSFoundation.Controllers.AppUsers
         #region Get Endpoints
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SystemAdmin")]
         public async Task<ActionResult<ApiResponse<IEnumerable<ClientUserSM>>>> GetAll()
         {
             var listSM = await _clientUserProcess.GetAllClientUsers();
             return Ok(ModelConverter.FormNewSuccessResponse(listSM));
         }
-
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SystemAdmin")]
         [HttpGet("company/{companyId}/{skip}/{top}")]
         public async Task<ActionResult<ApiResponse<IEnumerable<ClientUserSM>>>> GetUsersByCompanyId(int companyId, int skip, int top)
         {
@@ -74,6 +74,7 @@ namespace SMSFoundation.Controllers.AppUsers
             return Ok(ModelConverter.FormNewSuccessResponse(listSM));
         }
 
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SystemAdmin")]
         [HttpGet("companyusers/count/{companyId}")]
         public async Task<ActionResult<ApiResponse<IntResponseRoot>>> GetCountOfCompanyUsers(int companyId)
         {
@@ -82,6 +83,7 @@ namespace SMSFoundation.Controllers.AppUsers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SystemAdmin")]
         public async Task<ActionResult<ApiResponse<ClientUserSM>>> GetById(int id)
         {
             var singleSM = await _clientUserProcess.GetClientUserById(id);
@@ -96,6 +98,7 @@ namespace SMSFoundation.Controllers.AppUsers
         }
 
         [HttpGet("mine")]
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<ClientUserSM>>> GetMine()
         {
             var id = User.GetUserRecordIdFromCurrentUserClaims();
@@ -147,7 +150,7 @@ namespace SMSFoundation.Controllers.AppUsers
 
 
         [HttpPut("mine")]
-        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "ClientEmployee")]
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<ClientUserSM>>> Put([FromBody] ApiRequest<ClientUserSM> apiRequest)
         {
             #region Check Request
@@ -243,7 +246,7 @@ namespace SMSFoundation.Controllers.AppUsers
         #endregion Check Email/loginId and Verify Email
 
         #region Delete Endpoints
-
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "SystemAdmin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse<DeleteResponseRoot>>> Delete(int id)
         {
@@ -259,17 +262,18 @@ namespace SMSFoundation.Controllers.AppUsers
         }
 
         [HttpDelete("mine/logo")]
+        [Authorize(AuthenticationSchemes = SMSBearerTokenAuthHandlerRoot.DefaultSchema, Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<DeleteResponseRoot>>> DeleteUserProfilePicture()
         {
             #region Check Request
 
-            int currentCompanyId = User.GetCompanyRecordIdFromCurrentUserClaims();
-            if (currentCompanyId <= 0)
+            int userId = User.GetCompanyRecordIdFromCurrentUserClaims();
+            if (userId <= 0)
             { return NotFound(ModelConverter.FormNewErrorResponse(DomainConstantsRoot.DisplayMessagesRoot.Display_IdNotInClaims)); }
 
             #endregion Check Request
 
-            var resp = await _clientUserProcess.DeleteProfilePictureById(currentCompanyId, _environment.WebRootPath);
+            var resp = await _clientUserProcess.DeleteProfilePictureById(userId, _environment.WebRootPath);
             if (resp != null && resp.DeleteResult)
                 return Ok(ModelConverter.FormNewSuccessResponse(resp));
             else

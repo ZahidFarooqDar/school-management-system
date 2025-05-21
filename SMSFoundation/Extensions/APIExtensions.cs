@@ -177,7 +177,7 @@ namespace SMSFoundation.Extensions
                 var user = x.GetService<IHttpContextAccessor>().HttpContext.User;
                 if (user != null && user.Identity.IsAuthenticated)
                 {
-                    if (user.IsInRole(RoleTypeSM.SuperAdmin.ToString()) || user.IsInRole(RoleTypeSM.SystemAdmin.ToString()))
+                    if ( user.IsInRole(RoleTypeSM.SystemAdmin.ToString()))
                     {
                         var u = new LoginUserDetail();
                         u.DbRecordId = user.GetUserRecordIdFromCurrentUserClaims();
@@ -185,8 +185,8 @@ namespace SMSFoundation.Extensions
                         u.UserType = Enum.Parse<RoleTypeSM>(user.GetUserRoleTypeFromCurrentUserClaims());
                         return u;
                     }
-                    else if (user.IsInRole(RoleTypeSM.ClientAdmin.ToString()) || user.IsInRole(RoleTypeSM.ClientEmployee.ToString())
-                    || user.IsInRole(RoleTypeSM.CompanyAutomation.ToString()))
+                    else if (user.IsInRole(RoleTypeSM.Admin.ToString()) || user.IsInRole(RoleTypeSM.Student.ToString())
+                    || user.IsInRole(RoleTypeSM.Parent.ToString()))
                     {
                         var u = new LoginUserDetailWithCompany();
                         u.DbRecordId = user.GetUserRecordIdFromCurrentUserClaims();

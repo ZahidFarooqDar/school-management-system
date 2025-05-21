@@ -40,7 +40,6 @@ namespace SMSBAL.Token
             var passwordHash = await _passwordEncryptHelper.ProtectAsync(tokenReq.Password);
             switch (tokenReq.RoleType)
             {
-                case RoleTypeSM.SuperAdmin:
                 case RoleTypeSM.SystemAdmin:
                     var appUser = await _apiDbContext.ApplicationUsers
                         .FirstOrDefaultAsync(x => x.LoginId == tokenReq.LoginId && x.PasswordHash == passwordHash && x.RoleType == (RoleTypeDM)tokenReq.RoleType);
@@ -48,8 +47,9 @@ namespace SMSBAL.Token
                     { loginUserSM = _mapper.Map<ApplicationUserSM>(appUser); }
 
                     break;
-                case RoleTypeSM.ClientAdmin:
-                case RoleTypeSM.ClientEmployee:
+                case RoleTypeSM.Admin:
+                case RoleTypeSM.Student:
+                case RoleTypeSM.Parent:
                     {
                         var endUser = await _apiDbContext.ClientUsers
                         .Where(u => (u.EmailId == tokenReq.LoginId || u.LoginId == tokenReq.LoginId) && u.PasswordHash == null)
@@ -80,7 +80,7 @@ namespace SMSBAL.Token
                         }
                     }
                     break;
-                case RoleTypeSM.CompanyAutomation:
+                /*case RoleTypeSM.CompanyAutomation:
                     {
                         var data = await (from comp in _apiDbContext.ClientCompanyDetails
                                           join user in _apiDbContext.ClientUsers
@@ -95,7 +95,7 @@ namespace SMSBAL.Token
                             // loginUserSM.LoginStatus = LoginStatusSM.Enabled;
                         }
                     }
-                    break;
+                    break;*/
             }
             if (loginUserSM != null)
             {
