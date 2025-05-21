@@ -886,7 +886,7 @@ namespace SMSBAL.AppUsers
                     user.LastModifiedOnUTC = DateTime.UtcNow;
                     if (await _apiDbContext.SaveChangesAsync() > 0)
                     {
-                        await _userLicenseDetailsProcess.AddTrialLicenseDetails(user.Id);
+                        //await _userLicenseDetailsProcess.AddTrialLicenseDetails(user.Id);
                         return new BoolResponseRoot(true, "Your Email Verified Successfully, Login to your Account now");
                     }
                     throw new SMSException(ApiErrorTypeSM.Fatal_Log, $"Something went wrong while verifying your email, Please try again later");
