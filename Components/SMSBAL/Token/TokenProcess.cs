@@ -11,6 +11,7 @@ using SMSServiceModels.Enums;
 using SMSServiceModels.Foundation.Base.Enums;
 using SMSServiceModels.Foundation.Base.Interfaces;
 using SMSServiceModels.Foundation.Token;
+using SMSServiceModels.v1.Teachers;
 
 namespace SMSBAL.Token
 {
@@ -96,6 +97,20 @@ namespace SMSBAL.Token
                         }
                     }
                     break;*/
+                case RoleTypeSM.Teacher:
+                {
+                                            
+                    var data = await (from user in _apiDbContext.Teachers
+                                      where (user.EmailId == tokenReq.LoginId || user.LoginId == tokenReq.LoginId) && user.PasswordHash == passwordHash && user.RoleType == (RoleTypeDM)tokenReq.RoleType
+                                      select new { User = user, CompId = 0 }).FirstOrDefaultAsync();
+
+                    if (data != null && data.User != null)
+                    {
+                        loginUserSM = _mapper.Map<TeacherSM>(data.User);
+                        compId = data.CompId;
+                    }
+                }
+                break;
             }
             if (loginUserSM != null)
             {

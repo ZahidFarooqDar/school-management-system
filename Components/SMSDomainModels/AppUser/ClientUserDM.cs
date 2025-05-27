@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using SMSDomainModels.Enums;
+﻿using SMSDomainModels.AppUser.Login;
 using SMSDomainModels.Client;
-using SMSDomainModels.AppUser.Login;
+using SMSDomainModels.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SMSDomainModels.AppUser
 {

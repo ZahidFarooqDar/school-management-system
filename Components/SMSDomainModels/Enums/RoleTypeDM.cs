@@ -6,7 +6,8 @@
         //SuperAdmin = 1,
         SystemAdmin = 1,
         Admin = 2,
-        Student = 3,
-        Parent = 4,
+        Teacher = 3,
+        Student = 4,
+        Parent = 5,
     }
 }

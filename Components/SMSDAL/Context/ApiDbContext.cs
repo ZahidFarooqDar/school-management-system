@@ -5,6 +5,7 @@ using SMSDomainModels.Client;
 using SMSDomainModels.Foundation;
 using SMSDomainModels.v1.General.License;
 using SMSDomainModels.v1.General.ScanCodes;
+using SMSDomainModels.v1.Teachers;
 
 namespace SMSDAL.Context
 {
@@ -28,6 +29,7 @@ namespace SMSDAL.Context
         public DbSet<ClientUserDM> ClientUsers { get; set; }
         public DbSet<ClientCompanyDetailDM> ClientCompanyDetails { get; set; }
         public DbSet<ExternalUserDM> ExternalUsers { get; set; }
+        public DbSet<TeacherDM> Teachers { get; set; }
 
         #endregion App Users
 
